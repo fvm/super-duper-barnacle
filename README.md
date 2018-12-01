@@ -1,3 +1,17 @@
 # Advent of Code 2018
-
 Solutions and attempts at them
+
+## Priorities
+In order, solutions 
+
+### Language
+Try it in Go first, Java second, Python third (because `import allthethings`).
+
+### Toolset
+Try it with as little frameworks or external tools as possible, except for build toolchains and utilities like logging, annotations, etc.
+
+### Speed before readability
+Because speed is key here, I'll sacrifice readability for speed.
+
+### Experiments and Elegance
+Fair chance that I'll forego an easy solution for something cool or elegant, e.g. run a simple problem on a full-blown Kubernetes cluster or rewrite something to a one-liner.
