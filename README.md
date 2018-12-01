@@ -9,7 +9,7 @@ Second, I see this is as a nice way of solving puzzles and improving my problem-
 Third, I want this to be fun, so I might just skip one or two and, in order, I'll approach any solutions...
 
 ### Language
-Try it in Go first, Kotlin => Java second, Python as a last resort (because I'll probably not get it to work and Python allows anybody to just `from allTheThings import WhateverYouNeed`...).
+Try it in Go first, Kotlin => Java second, Python as a last resort (because I'll probably not get the solution earlier and Python allows anybody to just `from allTheThings import WhateverYouNeed`...).
 
 ### Toolset
 Try it with as little frameworks or external tools as possible, except for build toolchains and utilities like logging, annotations, etc.
