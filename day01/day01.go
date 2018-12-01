@@ -25,19 +25,20 @@ func solve(d Input) (sum int, err error) {
 	if err != nil {
 		return sum, err
 	}
-	var seen []int
+	seen := make(map[int]int)
 	for i := 0; ; i++ {
 		for _, v := range numbers {
 			sum += v
-			for _, v2 := range seen {
-				if v2 == sum {
-					logrus.Infof("Seen frequency: %d before", v2)
-					return sum, err
+			seen[sum] += 1
+			if v, ok := seen[sum]; ok {
+				if v == 2 {
+					logrus.Infof("Seen frequency: %d for the second time", sum)
+					return sum, nil
 				}
+			} else {
+				seen[sum] = 0
 			}
-			seen = append(seen, sum)
 		}
-		logrus.Infof("Frequency after %d iterations %d", i, sum)
 	}
 }
 
