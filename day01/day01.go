@@ -15,12 +15,13 @@ func (d Input) Solve() error {
 	if n, err := solve(d); err != nil {
 		return err
 	} else {
-		logrus.Infof("Frequency: %d", n)
+		logrus.Infof("Seen frequency: %d for the second time", n)
 	}
 	return nil
 }
 
-func solve(d Input) (sum int, err error) {
+func solve(d Input) (int, error) {
+	var sum int
 	numbers, err := readLinesFromInputFile(d.Filename)
 	if err != nil {
 		return sum, err
@@ -32,7 +33,6 @@ func solve(d Input) (sum int, err error) {
 			seen[sum] += 1
 			if v, ok := seen[sum]; ok {
 				if v == 2 {
-					logrus.Infof("Seen frequency: %d for the second time", sum)
 					return sum, nil
 				}
 			} else {
@@ -43,6 +43,7 @@ func solve(d Input) (sum int, err error) {
 }
 
 func readLinesFromInputFile(filename string) ([]int, error) {
+	var numbers []int
 	f, err := os.Open(filename)
 	defer func() {
 		if err := f.Close(); err != nil {
@@ -50,9 +51,8 @@ func readLinesFromInputFile(filename string) ([]int, error) {
 		}
 	}()
 	if err != nil {
-		return nil, err
+		return numbers, err
 	}
-	var numbers []int
 	s := bufio.NewScanner(f)
 	for s.Scan() {
 		line := s.Text()
@@ -62,5 +62,5 @@ func readLinesFromInputFile(filename string) ([]int, error) {
 			numbers = append(numbers, number)
 		}
 	}
-	return numbers, nil
+	return numbers, err
 }

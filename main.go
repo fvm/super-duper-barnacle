@@ -5,6 +5,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+//noinspection GoUnusedExportedType (it's used)
 type Solver interface {
 	Solve() error
 }
