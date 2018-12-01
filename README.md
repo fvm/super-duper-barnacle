@@ -2,10 +2,10 @@
 Solutions and attempts at them
 
 ## Priorities
-In order, solutions 
+In order, approach to solutions...
 
 ### Language
-Try it in Go first, Java second, Python third (because I'll probably not get it to work and Python fixes everything with `import allTheThings` and done).
+Try it in Go first, Kotlin => Java second, Python third (because I'll probably not get it to work and Python fixes everything with `import allTheThings` and done).
 
 ### Toolset
 Try it with as little frameworks or external tools as possible, except for build toolchains and utilities like logging, annotations, etc.
