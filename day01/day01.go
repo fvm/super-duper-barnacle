@@ -2,9 +2,12 @@ package day01
 
 import (
 	"bufio"
-	"github.com/sirupsen/logrus"
-	"os"
+	"bytes"
+	"io"
+	"io/ioutil"
 	"strconv"
+
+	"github.com/sirupsen/logrus"
 )
 
 type Input struct {
@@ -21,16 +24,28 @@ func (d Input) Solve() error {
 }
 
 func solve(d Input) (int, error) {
-	var sum int
-	numbers, err := readLinesFromInputFile(d.Filename)
+	r, err := openInput(d.Filename)
 	if err != nil {
-		return sum, err
+		return 0, err
 	}
+	numbers, err := scanNumbers(r)
+	if err != nil {
+		return 0, err
+	}
+	n, err := solveForSeries(numbers)
+	if err != nil {
+		return 0, err
+	}
+	return n, nil
+}
+
+func solveForSeries(s []int) (int, error) {
+	sum := 0
 	seen := make(map[int]int)
 	for i := 0; ; i++ {
-		for _, v := range numbers {
+		for _, v := range s {
 			sum += v
-			seen[sum] += 1
+			seen[sum]++
 			if v, ok := seen[sum]; ok {
 				if v == 2 {
 					return sum, nil
@@ -42,25 +57,24 @@ func solve(d Input) (int, error) {
 	}
 }
 
-func readLinesFromInputFile(filename string) ([]int, error) {
-	var numbers []int
-	f, err := os.Open(filename)
-	defer func() {
-		if err := f.Close(); err != nil {
-			logrus.Fatal(err)
-		}
-	}()
+func openInput(filename string) (io.Reader, error) {
+	b, err := ioutil.ReadFile(filename)
 	if err != nil {
-		return numbers, err
+		return nil, err
 	}
-	s := bufio.NewScanner(f)
+	return bytes.NewReader(b), nil
+}
+
+func scanNumbers(r io.Reader) ([]int, error) {
+	var numbers []int
+	s := bufio.NewScanner(r)
 	for s.Scan() {
 		line := s.Text()
-		if number, err := strconv.Atoi(line); err != nil {
-			continue
-		} else {
-			numbers = append(numbers, number)
+		number, err := strconv.Atoi(line)
+		if err != nil {
+			return nil, err
 		}
+		numbers = append(numbers, number)
 	}
-	return numbers, err
+	return numbers, nil
 }
