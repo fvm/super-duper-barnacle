@@ -96,7 +96,7 @@ func TestInput_solvePartOne(t *testing.T) {
 		{
 			name: "Test solvePartOne",
 			fields: fields{
-				Filename:     "./testdata/testinput.txt",
+				Filename:     "./testdata/input.txt",
 				TargetTuples: []int{2, 3},
 			},
 			want:    12,
@@ -136,9 +136,9 @@ func BenchmarkInput_solvePartOne(b *testing.B) {
 		fields fields
 	}{
 		{
-			name: "Test solvePartOne",
+			name: "Benchmark solvePartOne",
 			fields: fields{
-				Filename:     "./testdata/testinput.txt",
+				Filename:     "./testdata/input.txt",
 				TargetTuples: []int{2, 3},
 			},
 		},
@@ -349,23 +349,22 @@ func TestSequence_findMatchForSequence(t *testing.T) {
 			fields: fields{
 				characterCount: characterCount{},
 				tupleCount:     tupleCount{},
-				chars:          []string{"t","j","a","m","o","e","w","p","q","k","y","a","i","z","v","o","n","d","g","f","l","u","b","s","z","c"},
-
+				chars:          []string{"t", "j", "a", "m", "o", "e", "w", "p", "q", "k", "y", "a", "i", "z", "v", "o", "n", "d", "g", "f", "l", "u", "b", "s", "z", "c"},
 			},
 			args: args{
 				haystack: []Sequence{
 					{
 						characterCount: characterCount{},
 						tupleCount:     tupleCount{},
-						chars:          []string{"x","j","a","m","o","e","w","p","q","k","y","a","i","z","v","o","n","d","g","f","l","u","b","s","z","c"},
+						chars:          []string{"x", "j", "a", "m", "o", "e", "w", "p", "q", "k", "y", "a", "i", "z", "v", "o", "n", "d", "g", "f", "l", "u", "b", "s", "z", "c"},
 					}, {
 						characterCount: characterCount{},
 						tupleCount:     tupleCount{},
-						chars:          []string{"x","u","a","m","o","e","w","p","q","k","y","a","i","z","v","o","n","d","g","f","l","u","b","s","z","c"},
+						chars:          []string{"x", "u", "a", "m", "o", "e", "w", "p", "q", "k", "y", "a", "i", "z", "v", "o", "n", "d", "g", "f", "l", "u", "b", "s", "z", "c"},
 					}, {
 						characterCount: characterCount{},
 						tupleCount:     tupleCount{},
-						chars:          []string{"a","x","v","m","o","e","w","p","q","k","y","a","i","z","v","o","n","d","g","f","l","u","b","s","z","c"},
+						chars:          []string{"a", "x", "v", "m", "o", "e", "w", "p", "q", "k", "y", "a", "i", "z", "v", "o", "n", "d", "g", "f", "l", "u", "b", "s", "z", "c"},
 					},
 				},
 			},
@@ -373,7 +372,7 @@ func TestSequence_findMatchForSequence(t *testing.T) {
 			want: Sequence{
 				characterCount: characterCount{},
 				tupleCount:     tupleCount{},
-				chars:          []string{"x","j","a","m","o","e","w","p","q","k","y","a","i","z","v","o","n","d","g","f","l","u","b","s","z","c"},
+				chars:          []string{"x", "j", "a", "m", "o", "e", "w", "p", "q", "k", "y", "a", "i", "z", "v", "o", "n", "d", "g", "f", "l", "u", "b", "s", "z", "c"},
 			},
 			wantErr: false,
 		},
@@ -392,6 +391,40 @@ func TestSequence_findMatchForSequence(t *testing.T) {
 			}
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Sequence.findMatchForSequence() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func BenchmarkInput_solvePartTwo(b *testing.B) {
+
+	type fields struct {
+		Filename string
+	}
+	benchmarks := []struct {
+		name   string
+		fields fields
+	}{
+		{
+			name: "Benchmark solvePartTwo",
+			fields: fields{
+				Filename: "./testdata/input.txt",
+			},
+		},
+	}
+
+	for _, bb := range benchmarks {
+		b.Run(bb.name, func(b *testing.B) {
+			i := Input{
+				Filename: bb.fields.Filename,
+			}
+			input, err := openInput(i.Filename)
+			if err != nil {
+				b.Errorf("Error opening test files %v", err)
+			}
+			sequences := parseInputAsSequences(input)
+			for n := 0; n < b.N; n++ {
+				_, _ = sequences.solvePartTwo()
 			}
 		})
 	}
