@@ -1,8 +1,6 @@
 package day01
 
 import (
-	"io"
-	"reflect"
 	"testing"
 )
 
@@ -96,55 +94,4 @@ func Benchmark_solveForSeries(b *testing.B) {
 			}
 		}
 	})
-}
-func Test_openInput(t *testing.T) {
-	type args struct {
-		filename string
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    io.Reader
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := openInput(tt.args.filename)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("openInput() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("openInput() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func Test_scanNumbers(t *testing.T) {
-	type args struct {
-		r io.Reader
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    []int
-		wantErr bool
-	}{
-		// TODO: Add test cases.
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			got, err := scanNumbers(tt.args.r)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("scanNumbers() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("scanNumbers() = %v, want %v", got, tt.want)
-			}
-		})
-	}
 }

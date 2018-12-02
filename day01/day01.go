@@ -10,16 +10,17 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
+// Input serves as a type for main to pass stuff to
 type Input struct {
 	Filename string
 }
 
+// Solve for the given Input
 func (d Input) Solve() error {
 	if n, err := solve(d); err != nil {
 		return err
-	} else {
-		logrus.Infof("Seen frequency: %d for the second time", n)
 	}
+	logrus.Infof("Seen frequency: %d for the second time", n)
 	return nil
 }
 
