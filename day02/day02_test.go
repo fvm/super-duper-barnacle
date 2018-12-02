@@ -74,9 +74,9 @@ func Test_parseInput(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := parseInput(tt.args.reader)
+			got := parseInputAsSequences(tt.args.reader)
 			if !reflect.DeepEqual(got, tt.want) {
-				t.Errorf("parseInput() = %v, want %v", got, tt.want)
+				t.Errorf("parseInputAsSequences() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -109,7 +109,12 @@ func TestInput_solvePartOne(t *testing.T) {
 				Filename:     tt.fields.Filename,
 				TargetTuples: tt.fields.TargetTuples,
 			}
-			got, err := i.solvePartOne()
+			input, err := openInput(i.Filename)
+			if err != nil {
+				t.Errorf("Error opening test files %v", err)
+			}
+			sequences := parseInputAsSequences(input)
+			got, err := sequences.solvePartOne(i.TargetTuples)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Input.solvePartOne() error = %v, wantErr %v", err, tt.wantErr)
 				return
@@ -120,6 +125,7 @@ func TestInput_solvePartOne(t *testing.T) {
 		})
 	}
 }
+
 func BenchmarkInput_solvePartOne(b *testing.B) {
 	type fields struct {
 		Filename     string
@@ -143,8 +149,15 @@ func BenchmarkInput_solvePartOne(b *testing.B) {
 				Filename:     bb.fields.Filename,
 				TargetTuples: bb.fields.TargetTuples,
 			}
+
+			input, err := openInput(i.Filename)
+			if err != nil {
+				b.Errorf("Error opening test files %v", err)
+			}
+			sequences := parseInputAsSequences(input)
+
 			for n := 0; n < b.N; n++ {
-				_, _ = i.solvePartOne()
+				_, _ = sequences.solvePartOne(i.TargetTuples)
 			}
 		})
 	}
@@ -280,22 +293,90 @@ func BenchmarkSequence_howManyTuplesOf(b *testing.B) {
 	}
 }
 
-func TestSequence_hasTuple(t *testing.T) {
+func Test_hamming(t *testing.T) {
+	type args struct {
+		a []string
+		b []string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    int
+		wantErr bool
+	}{
+		{
+			name: "",
+			args: args{
+				a: []string{"b", "a", "b", "a", "b", "c"},
+				b: []string{"b", "a", "b", "a", "b", "d"},
+			},
+			want:    1,
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := hamming(tt.args.a, tt.args.b)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("hamming() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("hamming() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestSequence_findMatchForSequence(t *testing.T) {
 	type fields struct {
 		characterCount characterCount
 		tupleCount     tupleCount
 		chars          []string
 	}
 	type args struct {
-		n int
+		haystack []Sequence
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		args   args
-		want   bool
+		name    string
+		fields  fields
+		args    args
+		want    Sequence
+		wantErr bool
 	}{
-		// TODO: Add test cases.
+		{
+			name: "",
+			fields: fields{
+				characterCount: characterCount{},
+				tupleCount:     tupleCount{},
+				chars:          []string{"t","j","a","m","o","e","w","p","q","k","y","a","i","z","v","o","n","d","g","f","l","u","b","s","z","c"},
+
+			},
+			args: args{
+				haystack: []Sequence{
+					{
+						characterCount: characterCount{},
+						tupleCount:     tupleCount{},
+						chars:          []string{"x","j","a","m","o","e","w","p","q","k","y","a","i","z","v","o","n","d","g","f","l","u","b","s","z","c"},
+					}, {
+						characterCount: characterCount{},
+						tupleCount:     tupleCount{},
+						chars:          []string{"x","u","a","m","o","e","w","p","q","k","y","a","i","z","v","o","n","d","g","f","l","u","b","s","z","c"},
+					}, {
+						characterCount: characterCount{},
+						tupleCount:     tupleCount{},
+						chars:          []string{"a","x","v","m","o","e","w","p","q","k","y","a","i","z","v","o","n","d","g","f","l","u","b","s","z","c"},
+					},
+				},
+			},
+
+			want: Sequence{
+				characterCount: characterCount{},
+				tupleCount:     tupleCount{},
+				chars:          []string{"x","j","a","m","o","e","w","p","q","k","y","a","i","z","v","o","n","d","g","f","l","u","b","s","z","c"},
+			},
+			wantErr: false,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -304,8 +385,13 @@ func TestSequence_hasTuple(t *testing.T) {
 				tupleCount:     tt.fields.tupleCount,
 				chars:          tt.fields.chars,
 			}
-			if got := s.hasTuple(tt.args.n); got != tt.want {
-				t.Errorf("Sequence.hasTuple() = %v, want %v", got, tt.want)
+			got, err := s.findMatchForSequence(tt.args.haystack)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("Sequence.findMatchForSequence() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("Sequence.findMatchForSequence() = %v, want %v", got, tt.want)
 			}
 		})
 	}

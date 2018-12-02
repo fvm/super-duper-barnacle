@@ -3,6 +3,7 @@ package day02
 import (
 	"bufio"
 	"bytes"
+	"errors"
 	"github.com/sirupsen/logrus"
 	"io"
 	"io/ioutil"
@@ -33,26 +34,34 @@ type Sequence struct {
 }
 
 func (i Input) Solve() error {
-	n, err := i.solvePartOne()
+	input, err := openInput(i.Filename)
+	if err != nil {
+		return err
+	}
+	sequences := parseInputAsSequences(input)
+	n, err := sequences.solvePartOne(i.TargetTuples)
 	if err != nil {
 		return err
 	}
 	logrus.Infof("Found %d", n)
+	s, err := sequences.solvePartTwo()
+	if err != nil {
+		return err
+	}
+	logrus.Infof("Found %s", s)
+
 	return nil
 }
-func (i Input) solvePartOne() (int, error) {
-	input, err := openInput(i.Filename)
-	if err != nil {
-		return 0, err
-	}
+func (sequences Sequences) solvePartOne(targets []int) (int, error) {
 	hash := 1
-	sequences := parseInput(input)
-	for _, targetTuple := range i.TargetTuples {
+	for _, targetTuple := range targets {
 		count := 0 // This can go so much faster with channels and goroutines
-		for _, sequence := range sequences {
+		for k, sequence := range sequences {
+			sequence.countCharacterOccurrences()
 			if sequence.hasTuple(targetTuple) {
 				count++
 			}
+			sequences[k] = sequence
 		}
 		if count != 0 {
 			hash *= count
@@ -60,6 +69,27 @@ func (i Input) solvePartOne() (int, error) {
 	}
 	return hash, nil
 }
+
+func (sequences Sequences) solvePartTwo() (string, error) {
+	for _, sequence := range sequences {
+		needle, err := sequence.findMatchForSequence(sequences)
+		if err != nil {
+			if err.Error() == "not found" {
+				continue
+			}
+			return "", err
+		}
+		var result []string
+		for key, char := range needle.chars {
+			if needle.chars[key] == sequence.chars[key] {
+				result = append(result, char)
+			}
+		}
+		return strings.Join(result, ""), nil
+	}
+	return "", nil
+}
+
 func openInput(filename string) (io.Reader, error) {
 	b, err := ioutil.ReadFile(filename)
 	if err != nil {
@@ -68,7 +98,7 @@ func openInput(filename string) (io.Reader, error) {
 	return bytes.NewReader(b), nil
 }
 
-func parseInput(reader io.Reader) Sequences {
+func parseInputAsSequences(reader io.Reader) Sequences {
 	scanner := bufio.NewScanner(reader)
 	var sequences Sequences
 	for scanner.Scan() {
@@ -76,6 +106,33 @@ func parseInput(reader io.Reader) Sequences {
 		sequences = append(sequences, NewSequenceFromString(line))
 	}
 	return sequences
+}
+
+func (s Sequence) findMatchForSequence(haystack []Sequence) (Sequence, error) {
+	for _, h := range haystack {
+		d, err := hamming(s.chars, h.chars)
+		if err != nil {
+			logrus.Fatal(err)
+		}
+		if d == 1 {
+			return h, nil
+		}
+	}
+	return Sequence{}, errors.New("not found")
+}
+
+func hamming(s1 []string, s2 []string) (int, error) {
+	if len(s1) != len(s2) {
+		return 0, errors.New("s1 s2 are not the same length")
+	}
+	diff := 0
+	for i := 0; i < len(s1); i++ {
+		// This is ascii
+		if s1[i] != s2[i] {
+			diff++
+		}
+	}
+	return diff, nil
 }
 
 func NewSequenceFromString(str string) Sequence {
@@ -106,8 +163,10 @@ func NewSequence() Sequence {
 	}
 }
 
-func (s Sequence) hasTuple(n int) bool {
-	s.countCharacterOccurrences()
+func (s *Sequence) hasTuple(n int) bool {
+	if s.characterCount.counted == false {
+		s.countCharacterOccurrences()
+	}
 	for _, value := range s.characterCount.count {
 		if value == n {
 			return true
@@ -116,28 +175,30 @@ func (s Sequence) hasTuple(n int) bool {
 	return false
 }
 
-func (s Sequence) howManyTuplesOf(n int) int {
-	return s.countCharacterOccurrences().countTuples().tupleCount.count[n]
+func (s *Sequence) howManyTuplesOf(n int) int {
+	s.countCharacterOccurrences()
+	s.countTuples()
+	return s.tupleCount.count[n]
 }
 
-func (s Sequence) countTuples() Sequence {
+func (s *Sequence) countTuples() {
 	if s.tupleCount.counted == true {
-		return s
+		return
 	}
 	for _, value := range s.characterCount.count {
 		s.tupleCount.count[value]++
 	}
 	s.tupleCount.counted = true
-	return s
+	return
 }
 
-func (s Sequence) countCharacterOccurrences() Sequence {
+func (s *Sequence) countCharacterOccurrences() {
 	if s.characterCount.counted == true {
-		return s
+		return
 	}
 	for _, value := range s.chars {
 		s.characterCount.count[value]++
 	}
 	s.characterCount.counted = true
-	return s
+	return
 }
