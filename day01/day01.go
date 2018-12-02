@@ -17,7 +17,8 @@ type Input struct {
 
 // Solve for the given Input
 func (d Input) Solve() error {
-	if n, err := solve(d); err != nil {
+	n, err := solve(d)
+	if err != nil {
 		return err
 	}
 	logrus.Infof("Seen frequency: %d for the second time", n)
