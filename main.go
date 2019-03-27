@@ -19,7 +19,7 @@ func main() {
 	if err != nil {
 		logrus.Error(err)
 	}
-	
+
 	day02 := day02.Input{
 		Filename:     "./day02/input.txt",
 		TargetTuples: []int{2, 3},
