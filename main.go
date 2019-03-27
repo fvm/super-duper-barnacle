@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/fvm/super-duper-barnacle-AoC-2018/internal/pkg/day01"
-	"github.com/fvm/super-duper-barnacle-AoC-2018/internal/pkg/day02"
+	"github.com/fvm/super-duper-barnacle/internal/pkg/day01"
+	"github.com/fvm/super-duper-barnacle/internal/pkg/day02"
 	"github.com/sirupsen/logrus"
 )
 

@@ -1,4 +1,4 @@
-module github.com/fvm/super-duper-barnacle-AoC-2018
+module github.com/fvm/super-duper-barnacle
 
 go 1.12
 
