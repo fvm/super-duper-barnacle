@@ -4,5 +4,5 @@ GOPATH?=$$(go env GOPATH)
 fmt:
 	gofmt -w $(GOFMT_FILES)
 
-imports:
+imports: fmt
 	$(GOPATH)/bin/goimports -w $(GOFMT_FILES)
