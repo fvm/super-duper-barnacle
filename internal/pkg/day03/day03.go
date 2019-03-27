@@ -10,7 +10,7 @@ import (
 )
 
 type Claim struct {
-	//index int
+	// index int
 	claim image.Rectangle
 }
 
@@ -18,25 +18,11 @@ type Input struct {
 }
 
 func (Input) Solve() error {
-	panic("implement me")
+	return nil
 }
 
 type Solver interface {
 	Solve()
-}
-
-func solvePartOne() {
-	//	Claims which overlap two or more times
-	//	Equivalent to overlap only once
-	//	Equivalent to the intersection of one pair with another being empty
-	//	Equivalent to:
-	//	Start with an intersection of each one with themselves as A
-	//
-
-}
-
-func solvePartTwo() {
-
 }
 
 func (c1 Claim) Intersect(c2 Claim) Claim {
@@ -59,7 +45,7 @@ func parseInputAsSequences(reader io.Reader) ([]Claim, error) {
 
 func newClaim(line string) (Claim, error) {
 	var idx, x, y, dx, dy int
-	//#1 @ 555,891: 18x12
+	// #1 @ 555,891: 18x12
 	fString := "#%d @ %d,%d: %dx%d"
 	_, err := fmt.Sscanf(line, fString, idx, &x, &y, &dx, &dy)
 	if err != nil {
