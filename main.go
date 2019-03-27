@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/fvm/super-duper-barnacle-AoC-2018/day01"
-	"github.com/fvm/super-duper-barnacle-AoC-2018/day02"
+	"github.com/fvm/super-duper-barnacle-AoC-2018/internal/pkg/day01"
+	"github.com/fvm/super-duper-barnacle-AoC-2018/internal/pkg/day02"
 	"github.com/sirupsen/logrus"
 )
 
@@ -12,18 +12,18 @@ type Solver interface {
 }
 
 func main() {
-	day01input := day01.Input{
+	day01 := day01.Input{
 		Filename: "./day01/input.txt",
 	}
-	err := day01input.Solve()
+	err := day01.Solve()
 	if err != nil {
 		logrus.Error(err)
 	}
-	day02input := day02.Input{
+	day02 := day02.Input{
 		Filename:     "./day02/input.txt",
 		TargetTuples: []int{2, 3},
 	}
-	err = day02input.Solve()
+	err = day02.Solve()
 	if err != nil {
 		logrus.Error(err)
 	}

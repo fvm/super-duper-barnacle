@@ -17,16 +17,6 @@ type Input struct {
 
 type Sequences []Sequence
 
-type characterCount struct {
-	count   map[string]int
-	counted bool
-}
-
-type tupleCount struct {
-	count   map[int]int
-	counted bool
-}
-
 type Sequence struct {
 	characterCount characterCount
 	tupleCount     tupleCount
@@ -43,15 +33,26 @@ func (i Input) Solve() error {
 	if err != nil {
 		return err
 	}
-	logrus.Infof("Found %d", n)
+	logrus.Infof("Part one: %d", n)
 	s, err := sequences.solvePartTwo()
 	if err != nil {
 		return err
 	}
-	logrus.Infof("Found %s", s)
+	logrus.Infof("Part two: %s", s)
 
 	return nil
 }
+
+type characterCount struct {
+	count   map[string]int
+	counted bool
+}
+
+type tupleCount struct {
+	count   map[int]int
+	counted bool
+}
+
 func (sequences Sequences) solvePartOne(targets []int) (int, error) {
 	hash := 1
 	for _, targetTuple := range targets {

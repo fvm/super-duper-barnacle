@@ -3,11 +3,10 @@ package day01
 import (
 	"bufio"
 	"bytes"
+	"github.com/sirupsen/logrus"
 	"io"
 	"io/ioutil"
 	"strconv"
-
-	"github.com/sirupsen/logrus"
 )
 
 // Input serves as a type for main to pass stuff to
