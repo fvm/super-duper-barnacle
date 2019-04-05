@@ -3,15 +3,10 @@ package main
 import (
 	"github.com/sirupsen/logrus"
 
-	"github.com/fvm/super-duper-barnacle/internal/pkg/day01"
-	"github.com/fvm/super-duper-barnacle/internal/pkg/day02"
-	"github.com/fvm/super-duper-barnacle/internal/pkg/day03"
+	"github.com/fvm/super-duper-barnacle/internal/day01"
+	"github.com/fvm/super-duper-barnacle/internal/day02"
+	"github.com/fvm/super-duper-barnacle/internal/day03"
 )
-
-//noinspection GoUnusedExportedType (it's used)
-type Solver interface {
-	Solve() error
-}
 
 func main() {
 	day01input := day01.Input{

@@ -1,12 +1,8 @@
 package day03
 
 import (
-	"bufio"
-	"bytes"
 	"fmt"
 	"image"
-	"io"
-	"io/ioutil"
 )
 
 type Claim struct {
@@ -25,22 +21,9 @@ type Solver interface {
 	Solve()
 }
 
+// Intersect
 func (c1 Claim) Intersect(c2 Claim) Claim {
 	return Claim{c1.claim.Intersect(c2.claim)}
-}
-
-func parseInputAsSequences(reader io.Reader) ([]Claim, error) {
-	scanner := bufio.NewScanner(reader)
-	var claims []Claim
-	for scanner.Scan() {
-		line := scanner.Text()
-		claim, err := newClaim(line)
-		if err != nil {
-			return nil, err
-		}
-		claims = append(claims, claim)
-	}
-	return claims, nil
 }
 
 func newClaim(line string) (Claim, error) {
@@ -56,12 +39,4 @@ func newClaim(line string) (Claim, error) {
 	return Claim{
 		image.Rect(x, y, x+dx, y+dy),
 	}, nil
-}
-
-func openInput(filename string) (io.Reader, error) {
-	b, err := ioutil.ReadFile(filename)
-	if err != nil {
-		return nil, err
-	}
-	return bytes.NewReader(b), nil
 }
